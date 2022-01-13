@@ -1,25 +1,14 @@
 package Labs;
 
+import org.apache.groovy.json.internal.ArrayUtils;
+
+import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.*;
+import java.util.Scanner;
 
-//package com.company;
-//
-//public class encrypt {
-//    public static String getEncryptString(String encryptString, int shift) {
-//        char[] ArrayChar = encryptString.toCharArray(); // преобразуем переданную в метод строку в символьный массив
-//        long[] ArrayInt = new long[ArrayChar.length]; // создаем массив с типом данных long, размер массива равен размеру символьного массива
-//        char[] ArrayCharNew = new char[ArrayChar.length]; // создаем символьный массив в который будем записывать преобразованные символы
-//        //в цикле перебираем все символы из которых состоит переданная нами строка и прибавляем к ним число, ключ (сдвиг)
-//        for (int i = 0; i< ArrayChar.length; i++)
-//        {
-//            ArrayInt[i] = ArrayChar[i] + shift; // прибавляем к символу с индексом i сдвиг
-//            ArrayCharNew[i] = (char)ArrayInt[i]; // преобразовываем число в символ char и записываем на нужное место в новый массив
-//        }
-//        encryptString = new String (ArrayCharNew); // преобразовываем новый массив символов в строку
-//        return encryptString; // возвращаем строку в метод из которого был вызван текущий метод
-//    }
-//}
+
 public class lab_4 {
 
     public static void task1(){
@@ -160,23 +149,97 @@ public class lab_4 {
 //        и этот массив заполняется «змейкой»: сначала первая строка (слева направо),
 //        затем последний столбец (снизу вверх), вторая строка (слева направо) и так далее
         Random rand = new Random();
-        int nrow = 5; // число строк которое необходимо вывести
-        int ncolumn = 5;
-        int row ; // переменная задает число, необходимое для расчета количества строк
+        int nrow = 5; // длмнна строки
+        int ncolumn = 5; // кол-во строк
+        int row; // переменная задает число, необходимое для расчета количества строк
         int column ; // переменная задает число, необходимое для расчета количества колонок (символов в строке)
         int numbersnake = 0;
         int[][] arr = new int[ncolumn][nrow];
         for (column = 0 ; column < ncolumn; column++) {
             for (row = 0; row < nrow; row++) {
                 numbersnake++;
-//                arr[column][row] = rand.nextInt(nrow * 2);
+                if (column % 2 != 0) {
+                    arr[column][nrow - 1 - row] = numbersnake;
+                    continue;
+                }
                 arr[column][row] = numbersnake;
             }
+
             System.out.println(Arrays.toString(arr[column]));
         }
-
-
     }
+    public static void task8(){
+//        Напишите программу «Шифр Цезаря», которая зашифровывает
+//        введенный текст. Используете кодовую таблицу символов. При запуске
+//        программы в консоль необходимо вывести сообщение: «Введите текст для
+//        шифрования», после ввода текста, появляется сообщение: «Введите ключ».
+//        После того как введены все данные, необходимо вывести преобразованную
+//        строку с сообщением «Текст после преобразования : ». Далее необходимо
+//        задать вопрос пользователю: «Выполнить обратное преобразование? (y/n)»,
+//        если пользователь вводит «y», тогда выполнить обратное преобразование.
+//        Если пользователь вводит «n», того программа выводит сообщение «До
+//        свидания!». Если пользователь вводит что-то другое, отличное от «y» или «n»,
+//        то программа ему выводит сообщение: «Введите корректный ответ».
+
+        Scanner in = new Scanner(System.in);
+
+        System.out.println("Введите текст для шифрования: ");
+        String text = in.nextLine();
+        System.out.println("Введите ключ: ");
+        int key = in.nextInt();
+        char[] textChar = text.toCharArray();
+        for (int i = 0; i < textChar.length; i++){
+            textChar[i]+=key;
+        }
+        String enctext = new String (textChar);
+        System.out.println(enctext);
+        System.out.println("Выполнить обратное преобразование? (y/n)");
+        while (true) {
+            String reverse = in.next();
+            switch (reverse) {
+                case "y" -> System.out.println(text);
+                case "n" -> System.out.println("До свидания");
+                default -> {
+                    System.out.println("Введите корректный ответ");
+                    continue;
+                }
+            }
+            break;
+        }
+    }
+
+    public static void task9(){
+//        9* (дополнительная задача). Напишите программу «Шифр Цезаря», в которой
+//        необходимо реализовать собственный алфавит, остальные условия идентичны
+//        задаче 8.
+        String alf = "abcdifghklmnopqrstxyz";
+        Scanner in = new Scanner(System.in);
+
+        System.out.println("Введите текст для шифрования (abcdifghklmnopqrstxyz): ");
+        String text = in.nextLine();
+        System.out.println("Введите ключ: ");
+        int key = in.nextInt();
+        String textEncrypt = "";
+        for (int i = 0; i < text.length(); i++){
+            textEncrypt = textEncrypt + alf.charAt((alf.indexOf(text.charAt(i)) + key) % alf.length());
+        }
+        String enctext = new String (textEncrypt);
+        System.out.println(enctext);
+        System.out.println("Выполнить обратное преобразование? (y/n)");
+        while (true) {
+            String reverse = in.next();
+            switch (reverse) {
+                case "y" -> System.out.println(text);
+                case "n" -> System.out.println("До свидания");
+                default -> {
+                    System.out.println("Введите корректный ответ");
+                    continue;
+                }
+            }
+            break;
+        }
+    }
+
     public static void main(String[] args) {
 //        task1();
 //        task2();
@@ -185,7 +248,9 @@ public class lab_4 {
 //        task5();
 //        task6();
 //        task7();
-
+//        task8();
+//        task9();
     }
+
 
 }
